@@ -6,7 +6,13 @@ import kagglehub
 import pandas as pd
 
 # local
-from imdb_dataset_config import COMPETITION, DATA_DIR, FILES, REVIEW_PREVIEW_LENGTH
+from imdb_dataset_config import (
+    COMPETITION,
+    DATA_DIR,
+    FILES,
+    PROJECT_ROOT,
+    REVIEW_PREVIEW_LENGTH,
+)
 
 
 def print_summary(name: str, data: pd.DataFrame) -> None:
@@ -25,16 +31,16 @@ def print_summary(name: str, data: pd.DataFrame) -> None:
 
 def main() -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+    display_path = f"(project_root)/{DATA_DIR.relative_to(PROJECT_ROOT)}"
 
     if all(path.is_file() for path in FILES.values()):
-        download_path = DATA_DIR
-        print(f"Kaggle files already present; using: {download_path}")
+        print(f"Kaggle files already present; using: {display_path}")
     else:
-        download_path = kagglehub.competition_download(
+        kagglehub.competition_download(
             COMPETITION,
             output_dir=str(DATA_DIR),
         )
-        print(f"KaggleHub download path: {download_path}")
+        print(f"KaggleHub download path: {display_path}")
 
     datasets = {}
     for name, path in FILES.items():

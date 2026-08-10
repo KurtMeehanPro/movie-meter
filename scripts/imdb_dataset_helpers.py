@@ -9,22 +9,29 @@ import kagglehub
 import pandas as pd
 
 # local
-from imdb_dataset_config import COMPETITION, DATA_DIR, FILES, REVIEW_PREVIEW_LENGTH
+from imdb_dataset_config import (
+    COMPETITION,
+    DATA_DIR,
+    FILES,
+    PROJECT_ROOT,
+    REVIEW_PREVIEW_LENGTH,
+)
 
 
 def ensure_dataset_downloaded() -> None:
     """Download the configured competition with KaggleHub when files are absent."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+    display_path = f"(project_root)/{DATA_DIR.relative_to(PROJECT_ROOT)}"
 
     if all(path.is_file() for path in FILES.values()):
-        print(f"Kaggle files already present; using: {DATA_DIR}")
+        print(f"Kaggle files already present; using: {display_path}")
         return
 
-    download_path = kagglehub.competition_download(
+    kagglehub.competition_download(
         COMPETITION,
         output_dir=str(DATA_DIR),
     )
-    print(f"KaggleHub download path: {download_path}")
+    print(f"KaggleHub download path: {display_path}")
 
 
 def load_datasets() -> tuple[pd.DataFrame, pd.DataFrame]:
